@@ -1,0 +1,473 @@
+/* ==========================================================================
+   The Jiffy — link-in-bio page
+   Mobile-first. Single column, generous tap targets, brand fonts/colors.
+   ========================================================================== */
+
+/* ---- Brand fonts ----
+   Borough Grotesk        -> logo wordmark only
+   Libre Franklin (bold)  -> headlines (was Master Wide — see standby note)
+   Libre Franklin         -> accents, buttons/labels (bold weight)
+   Source Serif 4         -> body copy
+   ITC Century Book Cond. -> italic accent (tagline)
+   HWT Unit Gothic 718 -> on standby, not used for now (@font-face kept in
+   case James brings it back — costs nothing since it isn't referenced)
+   Master Wide 230 / 130 -> on standby, not used for now (same reasoning)
+*/
+@font-face {
+  font-family: "Borough Grotesk";
+  src: url("/fonts/borough-grotesk.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Master Wide 230";
+  src: url("/fonts/master-wide-230.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Master Wide 130";
+  src: url("/fonts/master-wide-130.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Serif 4";
+  src: url("/fonts/source-serif-4.woff2") format("woff2");
+  font-weight: 200 900; /* variable font */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Serif 4";
+  src: url("/fonts/source-serif-4-italic.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Libre Franklin";
+  src: url("/fonts/libre-franklin.woff2") format("woff2");
+  font-weight: 100 900; /* variable font */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Libre Franklin";
+  src: url("/fonts/libre-franklin-italic.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "HWT Unit Gothic 718";
+  src: url("/fonts/hwt-unit-gothic-718.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ITC Century Book Condensed";
+  src: url("/fonts/century-book-condensed-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic; /* this file is a true italic cut, not a fake slant */
+  font-display: swap;
+}
+
+/* Pulled from bookclub.thejiffy.xyz itself (weight 700 only) so the
+   "Glorious Country:" treatment here matches the book club page exactly. */
+@font-face {
+  font-family: "MasterCondensed";
+  src: url("/fonts/master-condensed-176.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---- Brand tokens ---- */
+:root {
+  --color-cream: #fdfcf8;
+  --color-black: #000000;
+  --color-blue: #0000ff;
+  --color-yellow: #ffcf00;
+  --color-magenta: #ff10f0;
+  --color-cyan: #00e0ff;
+  --color-green: #56e403; /* not in the original brand list — added for the award badges */
+
+  --font-logo: "Borough Grotesk", sans-serif;
+  --font-headline: "Libre Franklin", Helvetica, Arial, sans-serif;
+  --font-body: "Source Serif 4", Georgia, serif;
+  --font-tagline: "ITC Century Book Condensed", Georgia, serif;
+  --font-accent: "Libre Franklin", Helvetica, Arial, sans-serif;
+  --font-label: "Libre Franklin", Helvetica, Arial, sans-serif;
+
+  --content-max-width: 480px;
+  --gutter: 1.25rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-cream);
+  color: var(--color-black);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+.page {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 3rem;
+}
+
+/* ---- Section spacing ---- */
+.section {
+  padding: 2rem 0;
+}
+
+/* Editorial wave divider — a Victorian "coil rule" of the kind 1800s
+   newspapers set between columns/sections: a tight, geometric chain of
+   true semicircles (SVG arcs, not a soft sine curve), alternating up and
+   down. Drawn as ONE continuous path — 48 arcs across the tile — and
+   stretched to the full divider width (not tiled), so there's no repeat
+   boundary for a gap to appear at.
+   See the .wave-divider element inserted in the HTML between sections. */
+/* Uses an ELLIPTICAL arc (rx=4, ry=2 — not a true circle) so width/spacing
+   (rx) and bulge height (ry) can be tuned independently. rx is set to
+   exactly half the arc width, which keeps each arc a true half-ellipse
+   (sagitta = ry exactly) instead of an over/under-shot arc. */
+.wave-divider {
+  height: 8px;
+  margin: 0 0 0.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 480 8' preserveAspectRatio='none'%3E%3Cpath d='M0,4 A4,2 0 0,1 8,4 A4,2 0 0,0 16,4 A4,2 0 0,1 24,4 A4,2 0 0,0 32,4 A4,2 0 0,1 40,4 A4,2 0 0,0 48,4 A4,2 0 0,1 56,4 A4,2 0 0,0 64,4 A4,2 0 0,1 72,4 A4,2 0 0,0 80,4 A4,2 0 0,1 88,4 A4,2 0 0,0 96,4 A4,2 0 0,1 104,4 A4,2 0 0,0 112,4 A4,2 0 0,1 120,4 A4,2 0 0,0 128,4 A4,2 0 0,1 136,4 A4,2 0 0,0 144,4 A4,2 0 0,1 152,4 A4,2 0 0,0 160,4 A4,2 0 0,1 168,4 A4,2 0 0,0 176,4 A4,2 0 0,1 184,4 A4,2 0 0,0 192,4 A4,2 0 0,1 200,4 A4,2 0 0,0 208,4 A4,2 0 0,1 216,4 A4,2 0 0,0 224,4 A4,2 0 0,1 232,4 A4,2 0 0,0 240,4 A4,2 0 0,1 248,4 A4,2 0 0,0 256,4 A4,2 0 0,1 264,4 A4,2 0 0,0 272,4 A4,2 0 0,1 280,4 A4,2 0 0,0 288,4 A4,2 0 0,1 296,4 A4,2 0 0,0 304,4 A4,2 0 0,1 312,4 A4,2 0 0,0 320,4 A4,2 0 0,1 328,4 A4,2 0 0,0 336,4 A4,2 0 0,1 344,4 A4,2 0 0,0 352,4 A4,2 0 0,1 360,4 A4,2 0 0,0 368,4 A4,2 0 0,1 376,4 A4,2 0 0,0 384,4 A4,2 0 0,1 392,4 A4,2 0 0,0 400,4 A4,2 0 0,1 408,4 A4,2 0 0,0 416,4 A4,2 0 0,1 424,4 A4,2 0 0,0 432,4 A4,2 0 0,1 440,4 A4,2 0 0,0 448,4 A4,2 0 0,1 456,4 A4,2 0 0,0 464,4 A4,2 0 0,1 472,4 A4,2 0 0,0 480,4' stroke='%23000000' stroke-width='1.5' fill='none' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 100% 8px;
+}
+
+.eyebrow {
+  font-family: var(--font-label);
+  font-weight: 650; /* medium-bold, replacing HWT Unit Gothic for now */
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.7rem;
+  margin: 0 0 0.5rem;
+}
+
+/* "The Recent Newsletter" / "The Recent Podcast" — ITC Century Book
+   Condensed only ships one weight (its "Book" cut, already fairly
+   light), so that's the thinnest option available; there's no true
+   thin/light weight file to switch to. */
+.eyebrow--serif {
+  font-family: var(--font-tagline);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.section-heading {
+  font-family: var(--font-headline);
+  font-weight: 800; /* Libre Franklin bold */
+  text-align: center;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  margin: 0 0 0.75rem;
+}
+
+/* ---- Header ---- */
+.site-header {
+  padding: 2.5rem 0 2rem;
+  text-align: center;
+}
+
+.wordmark {
+  font-family: var(--font-logo);
+  /* h1 gets a bold default from the browser; Borough Grotesk only ships
+     one weight, so without this the browser fakes a bold (synthetic
+     emboldening) instead of rendering the font as designed. */
+  font-weight: 400;
+  letter-spacing: -0.03em; /* -30 tracking in design apps */
+  font-size: 5.25rem;
+  line-height: 1;
+  margin: 0;
+  color: var(--color-black);
+}
+
+.wordmark a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.tagline {
+  font-family: var(--font-tagline);
+  font-style: italic;
+  font-size: 1.1875rem; /* 19px, was 16px (1rem) */
+  margin: 0.75rem 0 0;
+}
+
+/* ---- Book Club promo ---- */
+.book-club {
+  background: var(--color-yellow);
+  border: 2px solid var(--color-black);
+  padding: 1.25rem 1.25rem 0.85rem; /* less weight under the CTA than the other three sides */
+  text-align: center;
+}
+
+.book-club__eyebrow {
+  text-align: left;
+  margin-bottom: 0.35rem; /* tighter — was inheriting .eyebrow's default 0.5rem */
+}
+
+/* Contains the floated cover image (clearfix) so it doesn't bleed into
+   the description/CTA below. Text is left-aligned here, unlike the
+   centered eyebrow/CTA around it — matches the book club page itself. */
+.book-club__intro {
+  overflow: hidden;
+  text-align: left;
+  margin-bottom: 0.75rem;
+}
+
+.book-club__cover {
+  float: right;
+  width: 90px;
+  margin: 0 0 0.5rem 1rem;
+  border: 2px solid var(--color-black);
+}
+
+.book-club__title {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 1.3rem;
+  line-height: 1.2;
+}
+
+.book-club__title em {
+  display: block;
+  font-family: "MasterCondensed", var(--font-body);
+  font-style: normal; /* override the browser's default italic on <em> */
+  font-weight: 700;
+  font-size: 2.25rem;
+  margin-bottom: 0.5rem; /* breathing room before the cover image/next line */
+}
+
+.book-club__description {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  text-align: left;
+  margin: 0 0 0.5rem;
+}
+
+.book-club__cta {
+  margin-top: 0.5rem;
+}
+
+/* ---- Award badges ---- */
+.award-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 2px solid var(--color-black);
+}
+
+.award-badge + .award-badge {
+  margin-top: 1rem;
+}
+
+/* Second badge: dot on the right, text right-justified. */
+.award-badge--reverse {
+  flex-direction: row-reverse;
+}
+
+.award-badge--reverse .award-badge__text {
+  text-align: right;
+}
+
+.award-badge__icon {
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--color-magenta);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.award-badge__icon--green {
+  background: var(--color-green);
+}
+
+.award-badge__text {
+  font-family: var(--font-accent);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ---- Newsletter subscribe (live beehiiv embed) ---- */
+.newsletter-embed {
+  border: 2px dashed var(--color-black);
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+/* ---- Content cards (newsletter issue / podcast episode) ---- */
+.card {
+  border: 2px solid var(--color-black);
+  padding: 1.25rem;
+  background: #fff;
+}
+
+.card__date {
+  font-family: var(--font-accent);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #555;
+  margin: 0 0 0.5rem;
+}
+
+.card__title {
+  font-family: var(--font-headline);
+  font-weight: 800; /* Libre Franklin bold */
+  text-align: left; /* newsletter/podcast titles stay left-justified */
+  font-size: 1.25rem;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+}
+
+.card__title a {
+  text-decoration: none;
+}
+
+.card__snippet {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  margin: 0 0 1rem;
+}
+
+/* ---- Buttons / labels ---- */
+.btn {
+  display: inline-block;
+  font-family: var(--font-label);
+  font-weight: 650; /* medium-bold, replacing HWT Unit Gothic for now */
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.85rem;
+  text-decoration: none;
+  padding: 0.75rem 1.25rem;
+  border: 2px solid var(--color-black);
+  background: var(--color-cyan);
+  color: var(--color-black);
+}
+
+.btn--block {
+  display: block;
+  text-align: center;
+}
+
+.btn--primary {
+  background: var(--color-blue);
+  color: var(--color-cream);
+}
+
+/* Used only for "Become a Sustaining Member" — kept separate from
+   .btn--primary so the book club CTA (which still uses .btn--primary)
+   stays blue. */
+.btn--magenta {
+  background: var(--color-magenta);
+  color: var(--color-cream);
+}
+
+.btn--secondary {
+  background: var(--color-cream);
+}
+
+/* Matches the podcast player's shell size (padding, border, margin) so
+   the two cards end on the same visual weight, whether that block holds
+   a button or an <audio> player — color is intentionally different
+   (yellow here, cyan on the player) so the two stay visually distinct. */
+.btn--card-cta {
+  display: block;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  text-align: center;
+  background: var(--color-yellow);
+}
+
+/* ---- Podcast player ---- */
+.podcast-player {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border: 2px solid var(--color-black);
+  background: var(--color-cyan);
+}
+
+.podcast-player audio {
+  width: 100%;
+  display: block;
+  accent-color: var(--color-blue);
+}
+
+/* ---- Support block ---- */
+.support-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+/* ---- Footer ---- */
+.site-footer {
+  padding: 2rem 0 0;
+  text-align: center;
+  font-family: var(--font-accent);
+  font-size: 0.85rem;
+}
+
+.site-footer__links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+}
+
+.site-footer__links a {
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-black);
+}
+
+/* ---- Small screens get a touch more breathing room on tap targets ---- */
+@media (max-width: 360px) {
+  .wordmark {
+    font-size: 2.25rem;
+  }
+}

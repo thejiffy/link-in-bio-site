@@ -1,0 +1,12 @@
+{
+  "name": "the-jiffy-link-in-bio",
+  "private": true,
+  "version": "1.0.0",
+  "description": "The Jiffy link-in-bio page — static site with a Node build step that pulls the latest newsletter issue and podcast episode from RSS.",
+  "scripts": {
+    "build": "node scripts/build.js"
+  },
+  "dependencies": {
+    "rss-parser": "^3.13.0"
+  }
+}
