@@ -442,7 +442,7 @@ a {
   margin-top: 1rem;
   padding: 0.85rem;
   border: 2px solid var(--color-black);
-  background: #fff;
+  background: var(--color-cyan);
 }
 
 .podcast-player__audio {
@@ -455,7 +455,7 @@ a {
   height: 3rem;
   border-radius: 50%;
   border: 2px solid var(--color-black);
-  background: var(--color-blue);
+  background: var(--color-black);
   color: var(--color-cream);
   display: flex;
   align-items: center;
@@ -469,12 +469,20 @@ a {
   height: 1.4rem;
 }
 
-/* Belt-and-suspenders: guarantee the [hidden] attribute actually hides
-   the icon. Browsers vary on how strongly their default [hidden] {
-   display: none } UA rule beats other declarations, so state it
-   explicitly rather than rely on that. */
-.podcast-player__icon[hidden] {
+/* Default to the play icon; .player.js toggles the "is-playing" class
+   rather than setting `.hidden` on these <svg>s directly — that IDL
+   property isn't reliably implemented for SVG elements across
+   browsers, so plain CSS display swaps via a class are used instead. */
+.podcast-player__icon[data-podcast-icon-pause] {
   display: none;
+}
+
+.podcast-player.is-playing [data-podcast-icon-play] {
+  display: none;
+}
+
+.podcast-player.is-playing [data-podcast-icon-pause] {
+  display: block;
 }
 
 /* Nudge the play triangle right — true geometric centering reads as
@@ -505,8 +513,7 @@ a {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--color-blue);
-  border: 2px solid var(--color-black);
+  background: var(--color-black);
   margin-top: -5px;
 }
 
@@ -514,8 +521,8 @@ a {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--color-blue);
-  border: 2px solid var(--color-black);
+  background: var(--color-black);
+  border: none;
 }
 
 .podcast-player__scrubber::-moz-range-track {

@@ -15,8 +15,6 @@ function formatTime(totalSeconds) {
 function setUpPlayer(playerEl) {
   const audio = playerEl.querySelector("[data-podcast-audio]");
   const toggle = playerEl.querySelector("[data-podcast-toggle]");
-  const iconPlay = playerEl.querySelector("[data-podcast-icon-play]");
-  const iconPause = playerEl.querySelector("[data-podcast-icon-pause]");
   const scrubber = playerEl.querySelector("[data-podcast-scrubber]");
   const elapsedEl = playerEl.querySelector("[data-podcast-elapsed]");
   const durationEl = playerEl.querySelector("[data-podcast-duration]");
@@ -29,15 +27,19 @@ function setUpPlayer(playerEl) {
     }
   });
 
+  // Toggle a class on the player rather than setting `.hidden` on the
+  // icon <svg>s directly — the `hidden` IDL property isn't reliably
+  // implemented for SVG elements across browsers, so it can silently
+  // fail to show/hide them even though everything else in this handler
+  // (e.g. the aria-label below) runs fine. Plain CSS display swaps via
+  // a class always work.
   audio.addEventListener("play", () => {
-    iconPlay.hidden = true;
-    iconPause.hidden = false;
+    playerEl.classList.add("is-playing");
     toggle.setAttribute("aria-label", "Pause episode");
   });
 
   audio.addEventListener("pause", () => {
-    iconPlay.hidden = false;
-    iconPause.hidden = true;
+    playerEl.classList.remove("is-playing");
     toggle.setAttribute("aria-label", "Play episode");
   });
 
