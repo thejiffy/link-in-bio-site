@@ -72,7 +72,7 @@ function buildSnippetHtml(rawText, maxLength, link) {
 
   const truncated = escapeHtml(clean.slice(0, maxLength).trim());
   const safeLink = escapeHtml(link || "");
-  return `${truncated}… <a href="${safeLink}">(read more)</a>`;
+  return `${truncated}… <a href="${safeLink}" target="_blank" rel="noopener noreferrer">(read more)</a>`;
 }
 
 async function fetchLatestNewsletterItem(feedUrl) {
