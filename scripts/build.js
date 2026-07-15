@@ -152,6 +152,7 @@ async function build() {
     PODCAST_TITLE: escapeHtml(podcast.title),
     PODCAST_SNIPPET: buildSnippetHtml(podcast.descriptionRaw, 200, podcast.link),
     PODCAST_AUDIO_URL: escapeHtml(podcast.audioUrl),
+    PODCAST_RSS_FEED_URL: escapeHtml(podcastFeedUrl),
   });
 
   fs.rmSync(DIST_DIR, { recursive: true, force: true });
@@ -162,7 +163,14 @@ async function build() {
     path.join(SRC_DIR, "styles.css"),
     path.join(DIST_DIR, "styles.css")
   );
+  fs.copyFileSync(
+    path.join(SRC_DIR, "player.js"),
+    path.join(DIST_DIR, "player.js")
+  );
   fs.cpSync(path.join(SRC_DIR, "fonts"), path.join(DIST_DIR, "fonts"), {
+    recursive: true,
+  });
+  fs.cpSync(path.join(SRC_DIR, "icons"), path.join(DIST_DIR, "icons"), {
     recursive: true,
   });
 

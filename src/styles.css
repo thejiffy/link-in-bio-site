@@ -431,18 +431,123 @@ a {
   background: var(--color-yellow);
 }
 
-/* ---- Podcast player ---- */
+/* ---- Podcast player ----
+   Custom-built (see /player.js) — the native <audio controls> UI can't
+   be restyled past its default browser pill shape, so the <audio>
+   element itself is hidden and this markup drives it entirely. */
 .podcast-player {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
   margin-top: 1rem;
-  padding: 0.75rem;
+  padding: 0.85rem;
   border: 2px solid var(--color-black);
-  background: var(--color-cyan);
+  background: #fff;
 }
 
-.podcast-player audio {
+.podcast-player__audio {
+  display: none;
+}
+
+.podcast-player__toggle {
+  flex: 0 0 auto;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 2px solid var(--color-black);
+  background: var(--color-blue);
+  color: var(--color-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+}
+
+.podcast-player__icon {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+/* Belt-and-suspenders: guarantee the [hidden] attribute actually hides
+   the icon. Browsers vary on how strongly their default [hidden] {
+   display: none } UA rule beats other declarations, so state it
+   explicitly rather than rely on that. */
+.podcast-player__icon[hidden] {
+  display: none;
+}
+
+/* Nudge the play triangle right — true geometric centering reads as
+   slightly left-heavy for a triangle pointing right. */
+.podcast-player__toggle svg[data-podcast-icon-play] {
+  margin-left: 2px;
+}
+
+.podcast-player__controls {
+  flex: 1 1 auto;
+  min-width: 0; /* let the scrubber shrink below its content size */
+}
+
+.podcast-player__scrubber {
+  -webkit-appearance: none;
+  appearance: none;
   width: 100%;
+  height: 4px;
   display: block;
-  accent-color: var(--color-blue);
+  background: var(--color-black);
+  margin: 0 0 0.4rem;
+  cursor: pointer;
+}
+
+.podcast-player__scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-blue);
+  border: 2px solid var(--color-black);
+  margin-top: -5px;
+}
+
+.podcast-player__scrubber::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-blue);
+  border: 2px solid var(--color-black);
+}
+
+.podcast-player__scrubber::-moz-range-track {
+  height: 4px;
+  background: var(--color-black);
+}
+
+.podcast-player__times {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-accent);
+  font-weight: 650;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+/* ---- "Listen on" platform links, inside the podcast card ---- */
+.podcast-links {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.podcast-links__item img {
+  width: 2.75rem;
+  height: 2.75rem;
+  display: block;
+}
+
+.podcast-links__item:hover img {
+  opacity: 0.8;
 }
 
 /* ---- Support block ---- */

@@ -43,7 +43,8 @@
 
     <!-- ============================================================
          3. LATEST PODCAST EPISODE + PLAYER
-         Native <audio> element, no third-party embed/iframe.
+         Custom-built player (no native <audio controls>, no third-party
+         embed/iframe) — see /player.js for the play/pause/scrubber logic.
          {{TOKENS}} filled in by scripts/build.js from the podcast RSS feed.
          ============================================================ -->
     <section class="section">
@@ -54,11 +55,81 @@
           <a href="{{PODCAST_LINK}}" target="_blank" rel="noopener noreferrer">{{PODCAST_TITLE}}</a>
         </h3>
         <p class="card__snippet">{{PODCAST_SNIPPET}}</p>
-        <div class="podcast-player">
-          <audio controls preload="none" src="{{PODCAST_AUDIO_URL}}">
+
+        <div class="podcast-player" data-podcast-player>
+          <audio
+            class="podcast-player__audio"
+            preload="metadata"
+            src="{{PODCAST_AUDIO_URL}}"
+            data-podcast-audio
+          >
             Your browser does not support the audio element.
             <a href="{{PODCAST_AUDIO_URL}}" target="_blank" rel="noopener noreferrer">Download the episode</a>.
           </audio>
+
+          <button
+            class="podcast-player__toggle"
+            type="button"
+            aria-label="Play episode"
+            data-podcast-toggle
+          >
+            <svg class="podcast-player__icon" viewBox="0 0 24 24" aria-hidden="true" data-podcast-icon-play>
+              <path d="M8 5v14l11-7z" fill="currentColor" />
+            </svg>
+            <svg class="podcast-player__icon" viewBox="0 0 24 24" aria-hidden="true" data-podcast-icon-pause hidden>
+              <path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor" />
+            </svg>
+          </button>
+
+          <div class="podcast-player__controls">
+            <input
+              class="podcast-player__scrubber"
+              type="range"
+              min="0"
+              max="0"
+              value="0"
+              step="0.1"
+              aria-label="Seek within episode"
+              data-podcast-scrubber
+            />
+            <div class="podcast-player__times">
+              <span data-podcast-elapsed>0:00</span>
+              <span data-podcast-duration>0:00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Static — James updates these hrefs by hand if the show ever
+             moves platforms. The RSS link reuses the same feed URL the
+             build script itself fetches from. -->
+        <div class="podcast-links">
+          <a
+            class="podcast-links__item"
+            href="https://podcasts.apple.com/us/podcast/the-jiffy-stories-from-upstate-new-york/id1738994348"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Listen on Apple Podcasts"
+          >
+            <img src="/icons/apple-podcasts.svg" alt="" />
+          </a>
+          <a
+            class="podcast-links__item"
+            href="https://open.spotify.com/show/4IgTM3aJC5d0t4olOOnHta"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Listen on Spotify"
+          >
+            <img src="/icons/spotify.svg" alt="" />
+          </a>
+          <a
+            class="podcast-links__item"
+            href="{{PODCAST_RSS_FEED_URL}}"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Subscribe via RSS"
+          >
+            <img src="/icons/rss.svg" alt="" />
+          </a>
         </div>
       </div>
     </section>
@@ -155,6 +226,8 @@
     </footer>
 
   </main>
+
+  <script src="/player.js" defer></script>
 
   <script>
     // Small, no-build-step touch: keep the footer copyright year current
