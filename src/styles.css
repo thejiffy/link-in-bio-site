@@ -344,6 +344,16 @@ a {
   background: #fff;
 }
 
+/* Article key art — only present when the RSS item has an enclosure,
+   see scripts/build.js. Omitted entirely (not rendered as a broken
+   image) when there isn't one. */
+.card__thumbnail {
+  width: 100%;
+  display: block;
+  border: 2px solid var(--color-black);
+  margin-bottom: 1rem;
+}
+
 .card__date {
   font-family: var(--font-accent);
   font-size: 0.75rem;

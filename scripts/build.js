@@ -84,6 +84,9 @@ async function fetchLatestNewsletterItem(feedUrl) {
     link: item.link || "",
     title: item.title || "",
     descriptionRaw: item.contentSnippet || "",
+    // Beehiiv publishes the article's key art as a standard RSS
+    // <enclosure> — same mechanism as the podcast audio file below.
+    thumbnailUrl: (item.enclosure && item.enclosure.url) || "",
   };
 }
 
@@ -136,6 +139,11 @@ async function build() {
     NEWSLETTER_DATE: escapeHtml(newsletter.date),
     NEWSLETTER_LINK: escapeHtml(newsletter.link),
     NEWSLETTER_TITLE: escapeHtml(newsletter.title),
+    // Already-safe HTML — omitted entirely (not a broken <img>) when the
+    // RSS item has no enclosure/thumbnail.
+    NEWSLETTER_THUMBNAIL_IMG: newsletter.thumbnailUrl
+      ? `<img class="card__thumbnail" src="${escapeHtml(newsletter.thumbnailUrl)}" alt="" />`
+      : "",
     // Already-safe HTML (may contain an inline "(read more)" link) —
     // do NOT escapeHtml this one, or that link would show up as text.
     NEWSLETTER_SNIPPET: buildSnippetHtml(newsletter.descriptionRaw, 200, newsletter.link),
