@@ -167,6 +167,14 @@ async function build() {
     path.join(SRC_DIR, "player.js"),
     path.join(DIST_DIR, "player.js")
   );
+  fs.copyFileSync(
+    path.join(SRC_DIR, "podcast-latest.js"),
+    path.join(DIST_DIR, "podcast-latest.js")
+  );
+  fs.copyFileSync(
+    path.join(SRC_DIR, "newsletter-latest.js"),
+    path.join(DIST_DIR, "newsletter-latest.js")
+  );
   fs.cpSync(path.join(SRC_DIR, "fonts"), path.join(DIST_DIR, "fonts"), {
     recursive: true,
   });

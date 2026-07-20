@@ -37,12 +37,15 @@
 
     <!-- ============================================================
          2. LATEST NEWSLETTER ISSUE
-         Markup/styling only for now — {{TOKENS}} get filled in by
-         scripts/build.js in Phase 2 from the newsletter RSS feed.
+         {{TOKENS}} filled in by scripts/build.js from the newsletter RSS
+         feed at build time — this is the fallback shown until
+         /newsletter-latest.js overwrites it with the live issue from
+         /api/latest-newsletter (a Cloudflare Pages Function), so a new
+         issue shows up here without needing a redeploy.
          ============================================================ -->
     <section class="section">
       <p class="eyebrow eyebrow--serif">The Recent Newsletter</p>
-      <div class="card">
+      <div class="card" data-newsletter-card>
         {{NEWSLETTER_THUMBNAIL_IMG}}
         <p class="card__date">{{NEWSLETTER_DATE}}</p>
         <h3 class="card__title">
@@ -59,7 +62,11 @@
          3. LATEST PODCAST EPISODE + PLAYER
          Custom-built player (no native <audio controls>, no third-party
          embed/iframe) — see /player.js for the play/pause/scrubber logic.
-         {{TOKENS}} filled in by scripts/build.js from the podcast RSS feed.
+         {{TOKENS}} filled in by scripts/build.js from the podcast RSS feed
+         at build time — this is the fallback shown until /podcast-latest.js
+         overwrites it with the live episode from /api/latest-episode
+         (a Cloudflare Pages Function), so a new episode shows up here
+         without needing a redeploy.
          ============================================================ -->
     <section class="section">
       <p class="eyebrow eyebrow--serif">The Recent Podcast</p>
@@ -243,6 +250,8 @@
   </main>
 
   <script src="/player.js" defer></script>
+  <script src="/podcast-latest.js" defer></script>
+  <script src="/newsletter-latest.js" defer></script>
 
   <script>
     // Small, no-build-step touch: keep the footer copyright year current
