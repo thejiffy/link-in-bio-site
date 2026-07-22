@@ -431,6 +431,12 @@ a {
   background: var(--color-yellow);
 }
 
+/* Overrides .btn--card-cta's yellow — used on "Read the issue" only, so
+   the Night Shift card's "Get Tickets" button stays yellow. */
+.btn--green {
+  background: var(--color-green);
+}
+
 /* ---- Podcast player ----
    Custom-built (see /player.js) — the native <audio controls> UI can't
    be restyled past its default browser pill shape, so the <audio>
