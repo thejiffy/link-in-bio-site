@@ -520,7 +520,6 @@ a {
   height: 14px;
   border-radius: 50%;
   background: var(--color-black);
-  margin-top: -5px;
 }
 
 .podcast-player__scrubber::-moz-range-thumb {
