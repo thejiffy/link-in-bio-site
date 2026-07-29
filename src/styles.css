@@ -214,11 +214,32 @@ a {
   line-height: 1;
   margin: 0;
   color: var(--color-black);
+  /* inline-block so the box hugs the rendered text (not the full centered
+     row) — the signature badge is positioned relative to this box. */
+  display: inline-block;
+  position: relative;
 }
 
 .wordmark a {
   text-decoration: none;
   color: inherit;
+}
+
+/* Sits like a stamped sticker over the wordmark's lower half, centered. */
+.signature-badge {
+  position: absolute;
+  bottom: 0.4rem;
+  left: 50%;
+  transform: translateX(-50%) rotate(-8deg);
+  background: var(--color-cyan);
+  border: 1.5px solid var(--color-black);
+  color: var(--color-black);
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 0.65rem;
+  letter-spacing: 0.02em;
+  padding: 0.2rem 0.55rem;
+  white-space: nowrap;
 }
 
 .tagline {
@@ -603,5 +624,11 @@ a {
 @media (max-width: 360px) {
   .wordmark {
     font-size: 2.25rem;
+  }
+
+  .signature-badge {
+    font-size: 0.42rem;
+    padding: 0.1rem 0.3rem;
+    bottom: 0.2rem;
   }
 }
