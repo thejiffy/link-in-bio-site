@@ -337,6 +337,14 @@ a {
   text-align: center;
 }
 
+.newsletter-note {
+  font-family: var(--font-tagline);
+  font-style: italic;
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 0.6rem 0 0;
+}
+
 /* ---- Content cards (newsletter issue / podcast episode) ---- */
 .card {
   border: 2px solid var(--color-black);
@@ -431,8 +439,7 @@ a {
   background: var(--color-yellow);
 }
 
-/* Overrides .btn--card-cta's yellow — used on "Read the issue" only, so
-   the Night Shift card's "Get Tickets" button stays yellow. */
+/* Overrides .btn--card-cta's yellow — used on "Read the issue" only. */
 .btn--green {
   background: var(--color-green);
 }
