@@ -5,8 +5,8 @@
 //      from real environment variables in Cloudflare Pages).
 //   2. Fetches both feeds and grabs the latest item from each.
 //   3. Injects that data into src/index.html wherever a {{TOKEN}} appears.
-//   4. Copies the templated HTML, styles.css, and fonts/ into dist/ — the
-//      folder Cloudflare Pages actually serves.
+//   4. Copies the templated HTML, styles.css, fonts/, icons/, and _headers
+//      into dist/ — the folder Cloudflare Pages actually serves.
 //
 // Run it with: npm run build
 
@@ -181,6 +181,10 @@ async function build() {
   fs.cpSync(path.join(SRC_DIR, "icons"), path.join(DIST_DIR, "icons"), {
     recursive: true,
   });
+  fs.copyFileSync(
+    path.join(SRC_DIR, "_headers"),
+    path.join(DIST_DIR, "_headers")
+  );
 
   console.log(`Build complete -> ${path.relative(process.cwd(), DIST_DIR)}/`);
 }

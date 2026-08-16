@@ -1,0 +1,432 @@
+<!--
+  The Jiffy — podcast player embed for the main website (www.thejiffy.xyz).
+
+  Self-contained: scoped CSS classes (all prefixed jiffy-podcast-embed__)
+  and a scoped script, so pasting this into an HTML embed block won't
+  collide with the host page's own styles/scripts. Paste the whole thing
+  into one HTML embed block, as-is.
+
+  Behavior mirrors the link-in-bio player at jamesinbio.thejiffy.xyz:
+    - The episode below is baked in as a fallback so the block is never
+      blank, even if the live fetch fails or is slow.
+    - On load, it fetches the newest episode from
+      https://jamesinbio.thejiffy.xyz/api/latest-episode (a Cloudflare
+      Pages Function that reads the podcast RSS feed at request time) and
+      upgrades the card in place — so a newly-published episode shows up
+      here without editing this embed again.
+    - Custom play/pause + scrubber controls, no third-party audio embed.
+
+  To refresh the fallback episode by hand later: copy the date/title/
+  link/snippet/audio src from https://jamesinbio.thejiffy.xyz/ (view
+  source) into the markup below.
+-->
+<div class="jiffy-podcast-embed">
+  <style>
+    .jiffy-podcast-embed {
+      --jpe-cream: #fdfcf8;
+      --jpe-black: #000000;
+      --jpe-cyan: #00e0ff;
+      --jpe-font-headline: "Libre Franklin", Helvetica, Arial, sans-serif;
+      --jpe-font-body: "Source Serif 4", Georgia, serif;
+      --jpe-font-accent: "Libre Franklin", Helvetica, Arial, sans-serif;
+
+      max-width: 480px;
+      margin: 0 auto;
+      font-family: var(--jpe-font-body);
+      color: var(--jpe-black);
+    }
+
+    .jiffy-podcast-embed, .jiffy-podcast-embed * {
+      box-sizing: border-box;
+    }
+
+    .jiffy-podcast-embed a {
+      color: inherit;
+    }
+
+    @font-face {
+      font-family: "Libre Franklin";
+      src: url("https://jamesinbio.thejiffy.xyz/fonts/libre-franklin.woff2") format("woff2");
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Source Serif 4";
+      src: url("https://jamesinbio.thejiffy.xyz/fonts/source-serif-4.woff2") format("woff2");
+      font-weight: 200 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    .jiffy-podcast-embed__card {
+      border: 2px solid var(--jpe-black);
+      padding: 1.25rem;
+      background: #fff;
+    }
+
+    .jiffy-podcast-embed__date {
+      font-family: var(--jpe-font-accent);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #555;
+      margin: 0 0 0.5rem;
+    }
+
+    .jiffy-podcast-embed__title {
+      font-family: var(--jpe-font-headline);
+      font-weight: 800;
+      text-align: left;
+      font-size: 1.25rem;
+      line-height: 1.2;
+      margin: 0 0 0.5rem;
+    }
+
+    .jiffy-podcast-embed__title a {
+      text-decoration: none;
+    }
+
+    .jiffy-podcast-embed__snippet {
+      font-family: var(--jpe-font-body);
+      font-size: 0.95rem;
+      margin: 0 0 1rem;
+    }
+
+    .jiffy-podcast-embed__player {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      margin-top: 1rem;
+      padding: 0.85rem;
+      border: 2px solid var(--jpe-black);
+      background: var(--jpe-cyan);
+    }
+
+    .jiffy-podcast-embed__audio {
+      display: none;
+    }
+
+    .jiffy-podcast-embed__toggle {
+      flex: 0 0 auto;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      border: 2px solid var(--jpe-black);
+      background: var(--jpe-black);
+      color: var(--jpe-cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .jiffy-podcast-embed__icon {
+      width: 1.4rem;
+      height: 1.4rem;
+    }
+
+    .jiffy-podcast-embed__icon[data-jpe-icon-pause] {
+      display: none;
+    }
+
+    .jiffy-podcast-embed__player.is-playing [data-jpe-icon-play] {
+      display: none;
+    }
+
+    .jiffy-podcast-embed__player.is-playing [data-jpe-icon-pause] {
+      display: block;
+    }
+
+    .jiffy-podcast-embed__toggle svg[data-jpe-icon-play] {
+      margin-left: 2px;
+    }
+
+    .jiffy-podcast-embed__controls {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .jiffy-podcast-embed__scrubber {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      display: block;
+      background: var(--jpe-black);
+      margin: 0 0 0.4rem;
+      cursor: pointer;
+    }
+
+    .jiffy-podcast-embed__scrubber::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--jpe-black);
+    }
+
+    .jiffy-podcast-embed__scrubber::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--jpe-black);
+      border: none;
+    }
+
+    .jiffy-podcast-embed__scrubber::-moz-range-track {
+      height: 4px;
+      background: var(--jpe-black);
+    }
+
+    .jiffy-podcast-embed__times {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--jpe-font-accent);
+      font-weight: 650;
+      font-size: 0.75rem;
+      letter-spacing: 0.02em;
+    }
+
+    .jiffy-podcast-embed__links {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .jiffy-podcast-embed__links img {
+      width: 2.75rem;
+      height: 2.75rem;
+      display: block;
+    }
+
+    .jiffy-podcast-embed__links a:hover img {
+      opacity: 0.8;
+    }
+  </style>
+
+  <div class="jiffy-podcast-embed__card">
+    <p class="jiffy-podcast-embed__date" data-jpe-date>July 19, 2026</p>
+    <h3 class="jiffy-podcast-embed__title">
+      <a
+        href="https://www.thejiffy.xyz/podcast/s/the_jiffy_stories_from_upstate_new_york/cow_parade"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-jpe-title-link
+        >Cow Parade</a
+      >
+    </h3>
+    <p class="jiffy-podcast-embed__snippet" data-jpe-snippet>
+      Every year, cows across the Hudson Valley skip, prance, spin, and leap into grassy pastures for the first time of the season. At Hawthorne Valley in Ghent, New York, this event is a rite of spring.…
+      <a
+        href="https://www.thejiffy.xyz/podcast/s/the_jiffy_stories_from_upstate_new_york/cow_parade"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-jpe-readmore
+        >(read more)</a
+      >
+    </p>
+
+    <div class="jiffy-podcast-embed__player" data-jpe-player>
+      <audio
+        class="jiffy-podcast-embed__audio"
+        preload="metadata"
+        src="https://podcasts.beehiiv.com/e227afe0-0a4e-4e0b-8c73-99a69aa13cfd/019d53e9-f6f6-761e-abcd-560eae84729d/019f77ac-fb6d-7e68-afc7-58a0d0b0592d/019f77ac-fc88-7185-98e6-daf4ae9dfc57.mp3"
+        data-jpe-audio
+      >
+        Your browser does not support the audio element.
+        <a
+          href="https://podcasts.beehiiv.com/e227afe0-0a4e-4e0b-8c73-99a69aa13cfd/019d53e9-f6f6-761e-abcd-560eae84729d/019f77ac-fb6d-7e68-afc7-58a0d0b0592d/019f77ac-fc88-7185-98e6-daf4ae9dfc57.mp3"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-jpe-download
+          >Download the episode</a
+        >.
+      </audio>
+
+      <button
+        class="jiffy-podcast-embed__toggle"
+        type="button"
+        aria-label="Play episode"
+        data-jpe-toggle
+      >
+        <svg class="jiffy-podcast-embed__icon" viewBox="0 0 24 24" aria-hidden="true" data-jpe-icon-play>
+          <path d="M8 5v14l11-7z" fill="currentColor" />
+        </svg>
+        <svg class="jiffy-podcast-embed__icon" viewBox="0 0 24 24" aria-hidden="true" data-jpe-icon-pause>
+          <path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor" />
+        </svg>
+      </button>
+
+      <div class="jiffy-podcast-embed__controls">
+        <input
+          class="jiffy-podcast-embed__scrubber"
+          type="range"
+          min="0"
+          max="0"
+          value="0"
+          step="0.1"
+          aria-label="Seek within episode"
+          data-jpe-scrubber
+        />
+        <div class="jiffy-podcast-embed__times">
+          <span data-jpe-elapsed>0:00</span>
+          <span data-jpe-duration>0:00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="jiffy-podcast-embed__links">
+      <a
+        href="https://podcasts.apple.com/us/podcast/the-jiffy-stories-from-upstate-new-york/id1738994348"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Listen on Apple Podcasts"
+      >
+        <img src="https://jamesinbio.thejiffy.xyz/icons/apple-podcasts.png" alt="" />
+      </a>
+      <a
+        href="https://open.spotify.com/show/4IgTM3aJC5d0t4olOOnHta"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Listen on Spotify"
+      >
+        <img src="https://jamesinbio.thejiffy.xyz/icons/spotify.png" alt="" />
+      </a>
+      <a
+        href="https://rss.beehiiv.com/podcasts/019d53e9-f6f6-761e-abcd-560eae84729d.xml"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Subscribe via RSS"
+      >
+        <img src="https://jamesinbio.thejiffy.xyz/icons/rss.svg" alt="" />
+      </a>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      function formatTime(totalSeconds) {
+        if (!isFinite(totalSeconds) || totalSeconds < 0) return "0:00";
+        var minutes = Math.floor(totalSeconds / 60);
+        var seconds = Math.floor(totalSeconds % 60);
+        return minutes + ":" + String(seconds).padStart(2, "0");
+      }
+
+      function setUpPlayer(playerEl) {
+        var audio = playerEl.querySelector("[data-jpe-audio]");
+        var toggle = playerEl.querySelector("[data-jpe-toggle]");
+        var scrubber = playerEl.querySelector("[data-jpe-scrubber]");
+        var elapsedEl = playerEl.querySelector("[data-jpe-elapsed]");
+        var durationEl = playerEl.querySelector("[data-jpe-duration]");
+
+        toggle.addEventListener("click", function () {
+          if (audio.paused) {
+            audio.play();
+          } else {
+            audio.pause();
+          }
+        });
+
+        audio.addEventListener("play", function () {
+          playerEl.classList.add("is-playing");
+          toggle.setAttribute("aria-label", "Pause episode");
+        });
+
+        audio.addEventListener("pause", function () {
+          playerEl.classList.remove("is-playing");
+          toggle.setAttribute("aria-label", "Play episode");
+        });
+
+        audio.addEventListener("loadedmetadata", function () {
+          scrubber.max = audio.duration;
+          durationEl.textContent = formatTime(audio.duration);
+        });
+
+        audio.addEventListener("timeupdate", function () {
+          scrubber.value = audio.currentTime;
+          elapsedEl.textContent = formatTime(audio.currentTime);
+        });
+
+        scrubber.addEventListener("input", function () {
+          audio.currentTime = Number(scrubber.value);
+        });
+      }
+
+      document
+        .querySelectorAll(".jiffy-podcast-embed [data-jpe-player]")
+        .forEach(setUpPlayer);
+
+      // ---- Live-upgrade from the same API the link-in-bio page uses.
+      // The episode baked into the markup above stays on screen the whole
+      // time this fetch is in flight, and stays put permanently if the
+      // fetch ever fails — this only ever upgrades the card, never blanks
+      // it. Requires the endpoint to send Access-Control-Allow-Origin
+      // (it does) since this runs on a different origin than the API. ----
+      function buildSnippetNodes(text, truncated, link) {
+        var nodes = [document.createTextNode(truncated ? text + "… " : text)];
+        if (truncated) {
+          var readMore = document.createElement("a");
+          readMore.href = link;
+          readMore.target = "_blank";
+          readMore.rel = "noopener noreferrer";
+          readMore.textContent = "(read more)";
+          nodes.push(readMore);
+        }
+        return nodes;
+      }
+
+      async function refreshLatestEpisode(root) {
+        var playerEl = root.querySelector("[data-jpe-player]");
+        if (!playerEl) return;
+
+        var episode;
+        try {
+          var response = await fetch(
+            "https://jamesinbio.thejiffy.xyz/api/latest-episode"
+          );
+          if (!response.ok) return;
+          episode = await response.json();
+        } catch (error) {
+          return;
+        }
+
+        if (!episode || !episode.audioUrl) return;
+
+        var dateEl = root.querySelector("[data-jpe-date]");
+        var titleLinkEl = root.querySelector("[data-jpe-title-link]");
+        var snippetEl = root.querySelector("[data-jpe-snippet]");
+        var audio = playerEl.querySelector("[data-jpe-audio]");
+        var downloadLink = audio ? audio.querySelector("[data-jpe-download]") : null;
+
+        if (dateEl) dateEl.textContent = episode.date;
+
+        if (titleLinkEl) {
+          titleLinkEl.textContent = episode.title;
+          titleLinkEl.href = episode.link;
+        }
+
+        if (snippetEl) {
+          snippetEl.replaceChildren.apply(
+            snippetEl,
+            buildSnippetNodes(episode.snippetText, episode.snippetTruncated, episode.link)
+          );
+        }
+
+        if (downloadLink) downloadLink.href = episode.audioUrl;
+
+        if (audio && audio.getAttribute("src") !== episode.audioUrl) {
+          audio.pause();
+          audio.setAttribute("src", episode.audioUrl);
+          audio.load();
+        }
+      }
+
+      document.querySelectorAll(".jiffy-podcast-embed").forEach(refreshLatestEpisode);
+    })();
+  </script>
+</div>

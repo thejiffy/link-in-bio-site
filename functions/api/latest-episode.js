@@ -59,7 +59,13 @@ function buildSnippet(rawText) {
 function jsonResponse(body, status) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { "content-type": "application/json" },
+    // Allow-Origin: * — this is a public, read-only, cookie-free endpoint,
+    // so it's safe to let other origins (e.g. the main thejiffy.xyz site's
+    // podcast player embed) fetch it directly.
+    headers: {
+      "content-type": "application/json",
+      "access-control-allow-origin": "*",
+    },
   });
 }
 

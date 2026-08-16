@@ -183,11 +183,11 @@
       <p class="eyebrow eyebrow--serif">Recent Recognition</p>
       <div class="award-badge">
         <div class="award-badge__icon" aria-hidden="true">💫</div>
-        <p class="award-badge__text">Nominated "<strong>Best Local Podcast</strong>" in <strong>the Hudson Valley Magazine's Best Of The Hudson Valley Awards</strong></p>
+        <p class="award-badge__text">Nominated <strong>“Best Local Podcast”</strong> in <strong>the Hudson Valley Magazine’s Best Of The Hudson Valley Awards</strong></p>
       </div>
       <div class="award-badge award-badge--reverse">
         <div class="award-badge__icon award-badge__icon--green" aria-hidden="true">👀</div>
-        <p class="award-badge__text">Nominated "<strong>Best Regional Podcast</strong>" in <strong>Chronogram Magazine's Readers' Choice Awards</strong></p>
+        <p class="award-badge__text">Nominated <strong>“Best Regional Podcast”</strong> in <strong>Chronogram Magazine’s Readers’ Choice Awards</strong></p>
       </div>
     </section>
 
@@ -200,21 +200,24 @@
       <p class="eyebrow eyebrow--serif">The Book Club</p>
       <div class="book-club">
         <p class="eyebrow book-club__eyebrow">Now Reading</p>
-        <div class="book-club__intro">
-          <!-- "Glorious Country:" comes before the float in source order,
-               so it renders full-width, un-wrapped, above the image —
-               the image then floats starting at "How the Artist...". -->
-          <h2 class="book-club__title">
-            <em>Glorious Country:</em>
-            <img
-              class="book-club__cover"
-              src="https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9781982196295/glorious-country-9781982196295_xlg.jpg"
-              alt="Glorious Country book cover"
-            />
-            <span>How the Artist Frederic Church Brought the World to America and America to the World</span>
-          </h2>
-        </div>
-        <p class="book-club__description">A six-week newsletter and podcast series exploring Victoria Johnson's biography of Frederic Church.</p>
+        <!-- Stacked, not wrapped: the cover gets its own full-measure
+             moment, then the headline/dek/body run at full column width
+             below it. A display headline squeezed into a float-wrap
+             column reads as 1–2 words per line and loses all its
+             impact — magazine layouts stack instead of wrapping display
+             type. This is also the mobile-first call: 99% of readers
+             see this on a phone, where a wrap column gets too narrow
+             to hold a headline at any usable size. -->
+        <img
+          class="book-club__cover"
+          src="https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9781982196295/glorious-country-9781982196295_xlg.jpg"
+          alt="Glorious Country book cover"
+        />
+        <h2 class="book-club__title">
+          <em>Glorious Country:</em>
+          <span class="book-club__subtitle">How the Artist Frederic Church Brought the World to America and America to the World</span>
+        </h2>
+        <p class="book-club__description">A six-week newsletter and podcast series exploring Victoria Johnson’s biography of Frederic Church.</p>
         <a class="btn btn--primary book-club__cta" href="https://bookclub.thejiffy.xyz" target="_blank" rel="noopener noreferrer">
           Read With Us
         </a>
