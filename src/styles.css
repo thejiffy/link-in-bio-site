@@ -253,7 +253,7 @@ a {
 .book-club {
   background: var(--color-yellow);
   border: 2px solid var(--color-black);
-  padding: 1.25rem 1.25rem 0.85rem; /* less weight under the CTA than the other three sides */
+  padding: 1.25rem;
   text-align: center;
 }
 
