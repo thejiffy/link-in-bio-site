@@ -82,7 +82,7 @@
 }
 
 /* Pulled from bookclub.thejiffy.xyz itself (weight 700 only) so the
-   "Glorious Country:" treatment here matches the book club page exactly. */
+   book-title treatment here matches the book club page exactly. */
 @font-face {
   font-family: "MasterCondensed";
   src: url("/fonts/master-condensed-176.woff2") format("woff2");
