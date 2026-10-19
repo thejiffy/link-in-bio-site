@@ -309,6 +309,21 @@ a {
   margin-top: 0.5rem;
 }
 
+/* ---- Election guide promo ---- */
+.election-guide__art {
+  width: 100%;
+  height: auto;
+  border: 2px solid var(--color-black);
+  margin-bottom: 1rem;
+}
+
+/* Magenta to match the guide's key art — scoped here because
+   .btn--card-cta (declared later) would otherwise win with yellow. */
+.election-guide .btn--card-cta {
+  background: var(--color-magenta);
+  color: var(--color-cream);
+}
+
 /* ---- Award badges ---- */
 .award-badge {
   display: flex;
