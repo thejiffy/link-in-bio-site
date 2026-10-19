@@ -10,6 +10,7 @@
 //
 // Run it with: npm run build
 
+const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 const Parser = require("rss-parser");
@@ -134,8 +135,19 @@ async function build() {
   const podcast = await fetchLatestPodcastItem(podcastFeedUrl);
   console.log(`  -> ${podcast.title}`);
 
+  // Content hash of styles.css, appended to its <link> as ?v=… so every
+  // CSS change gets a fresh URL — otherwise browsers keep the old file for
+  // up to Cloudflare's 4-hour max-age while the new HTML already expects
+  // the new rules (e.g. a new <img> renders stretched without its CSS).
+  const stylesVersion = crypto
+    .createHash("md5")
+    .update(fs.readFileSync(path.join(SRC_DIR, "styles.css")))
+    .digest("hex")
+    .slice(0, 10);
+
   const template = fs.readFileSync(path.join(SRC_DIR, "index.html"), "utf8");
   const html = injectTokens(template, {
+    STYLES_VERSION: stylesVersion,
     NEWSLETTER_DATE: escapeHtml(newsletter.date),
     NEWSLETTER_LINK: escapeHtml(newsletter.link),
     NEWSLETTER_TITLE: escapeHtml(newsletter.title),
